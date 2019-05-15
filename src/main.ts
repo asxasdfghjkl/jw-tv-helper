@@ -13,9 +13,9 @@ Vue.config.productionTip = false;
       return alert(`Please use this script on a video downloading page.`);
     }
   }
-
   document.write(
     `
+<style>.material-icons,.no-select{user-select:none;} .btn:not(.disabled),.pointer{cursor:pointer;}</style>
 <div id="app"></div>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
   integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -24,6 +24,7 @@ Vue.config.productionTip = false;
   );
 
   new Vue({
-    render: h => h(App),
-  }).$mount("#app");
+    el: '#app',
+    render: h => h(App)
+  });
 })();

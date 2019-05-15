@@ -6,7 +6,7 @@
           class="nav-item"
           @click="tab='download'"
         >
-          <span :class="['nav-link', { active: tab === 'download' }]">
+          <span :class="['nav-link d-inline-flex pointer', { active: tab === 'download' }]">
             <span class="material-icons">save_alt</span>
             Download
           </span>
@@ -15,13 +15,13 @@
           class="nav-item"
           @click="tab='play'"
         >
-          <span :class="['nav-link', { active: tab === 'play' }]">
+          <span :class="['nav-link d-inline-flex pointer', { active: tab === 'play' }]">
             <span class="material-icons">play_arrow</span>
             Play
           </span>
         </li>
       </ul>
-      <div class="tab-content p-3">
+      <div class="tab-content p-3" style="border: 1px solid rgba(0, 0, 0, 0.125);border-top-color: transparent;">
         <keep-alive>
           <component
             :is="tabComponent"
@@ -88,15 +88,3 @@ export default class Main extends Vue {
   }
 }
 </script>
-
-<style scoped>
-.tab-content {
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  border-top-color: transparent;
-}
-
-.nav-link {
-  display: inline-flex;
-  cursor: pointer;
-}
-</style>

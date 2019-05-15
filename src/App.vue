@@ -25,28 +25,3 @@ export default class App extends Vue {
     : window.location.href;
 }
 </script>
-
-<style>
-html,
-body,
-#app {
-  height: 100%;
-}
-
-.material-icons {
-  user-select: none;
-}
-
-/* fix for bootstrap */
-.btn:not(.disabled) {
-  cursor: pointer;
-}
-
-.modal.show {
-  display: block;
-}
-
-.moda.backdrop {
-  background-color: #00000088;
-}
-</style>

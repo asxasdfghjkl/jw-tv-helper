@@ -2,8 +2,9 @@
   <div
     v-if="!video"
     class="embed-responsive embed-responsive-16by9 d-flex justify-content-center align-items-center video-placeholder"
+    style="background: var(--dark, #000000dd);color: white;"
   >
-    <span class="material-icons">video_library</span>
+    <span class="material-icons" style="font-size:40px;">video_library</span>
   </div>
   <div v-else>
     <video
@@ -12,9 +13,9 @@
       :src="video && video.url"
     >
       <track
-        v-if="base64Subtitles"
+        v-if="base64"
         kind="captions"
-        :src="base64Subtitles"
+        :src="base64"
         default
       >
     </video>
@@ -35,7 +36,7 @@ export default class VideoPlayer extends Vue {
   @Prop() video!: IFileItemObj | null;
   @Prop() subtitles!: IFileItemObj[];
 
-  get base64Subtitles(): string | null {
+  get base64(): string | null {
     if (!this.subtitles.length) {
       return null;
     }
@@ -54,14 +55,3 @@ export default class VideoPlayer extends Vue {
   }
 }
 </script>
-
-<style scoped>
-.video-placeholder {
-  background: var(--dark, #000000dd);
-  color: white;
-}
-
-.video-placeholder > span {
-  font-size: 40px;
-}
-</style>

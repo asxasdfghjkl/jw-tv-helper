@@ -8,7 +8,7 @@
       JW TV Helper
     </span>
     <div class="navbar-actions">
-      <div class="btn btn-primary material-icons rounded-pill p-2">settings</div>
+      <div class="btn btn-primary material-icons rounded-pill p-2">translate</div>
     </div>
   </nav>
 </template>
@@ -19,7 +19,6 @@ import { Vue, Component } from 'vue-property-decorator';
 @Component({
 })
 export default class Appbar extends Vue {
-
   onBackToSite() {
     window.location.reload();
   }

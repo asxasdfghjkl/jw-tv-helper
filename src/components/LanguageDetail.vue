@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card mb-3">
     <template v-if="!info">
       <div class="card-header">
         [{{lang.name}}]
@@ -24,12 +24,12 @@
         <li
           v-for="file in info.files"
           :key="file.label"
-          class="list-group-item d-flex justify-content-between "
+          class="list-group-item d-flex justify-content-between no-select"
         >
           {{file.label}}
           <div>
             <a
-              class="material-icons btn btn-secondary"
+              class="material-icons btn btn-secondary mr-2"
               :href="file.progressiveDownloadURL"
               @click.stop="onClick($event, file.progressiveDownloadURL, lang)"
             >videocam</a>
@@ -70,13 +70,3 @@ export default class LanguageDetail extends Vue {
   }
 }
 </script>
-
-<style scoped>
-.btn + .btn {
-  margin-left: 0.3em;
-}
-
-.list-group-item {
-  user-select: none;
-}
-</style>
