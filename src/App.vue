@@ -1,28 +1,52 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div
+    id="app"
+    class="d-flex flex-column vh-100"
+  >
+    <Appbar />
+    <Main />
   </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import { Component, Vue, Provide, Inject } from 'vue-property-decorator';
+import Appbar from '@/components/Frame/Appbar.vue';
+import Main from '@/components/Frame/Main.vue';
 
-export default {
-  name: 'app',
+@Component({
   components: {
-    HelloWorld
-  }
+    Appbar,
+    Main
+  },
+})
+export default class App extends Vue {
+  @Provide() url: string = window.location.hostname === 'localhost'
+    ? 'https://tv.jw.org/#cmn-hant/mediaitems/StudioMonthly2019/pub-jwb_201905_1_VIDEO'
+    : window.location.href;
 }
 </script>
 
 <style>
+html,
+body,
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  height: 100%;
+}
+
+.material-icons {
+  user-select: none;
+}
+
+/* fix for bootstrap */
+.btn:not(.disabled) {
+  cursor: pointer;
+}
+
+.modal.show {
+  display: block;
+}
+
+.moda.backdrop {
+  background-color: #00000088;
 }
 </style>
