@@ -15,16 +15,20 @@ Vue.config.productionTip = false;
   }
   document.write(
     `
-<style>.material-icons,.no-select{user-select:none;} .btn:not(.disabled),.pointer{cursor:pointer;}</style>
+<style>
+.material-icons,.no-select{user-select:none;}
+.btn:not(.disabled),.pointer{cursor:pointer;}
+.modal.backdrop{background-color:#00000088;}
+</style>
 <div id="app"></div>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 `
   );
 
+  // tslint:disable-next-line: no-unused-expression
   new Vue({
-    el: '#app',
+    el: "#app",
     render: h => h(App)
   });
 })();

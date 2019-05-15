@@ -21,7 +21,10 @@
           </span>
         </li>
       </ul>
-      <div class="tab-content p-3" style="border: 1px solid rgba(0, 0, 0, 0.125);border-top-color: transparent;">
+      <div
+        class="tab-content p-3"
+        style="border: 1px solid rgba(0, 0, 0, 0.125);border-top-color: transparent;"
+      >
         <keep-alive>
           <component
             :is="tabComponent"
@@ -35,11 +38,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Inject } from 'vue-property-decorator';
+import { Component, Vue, Inject, Prop, Watch } from "vue-property-decorator";
 import Axios from "axios";
-import { IVideoInfoObj } from '@/objs/IVideoInfoObj';
-import DownloadTab from '@/components/DownloadTab.vue';
-import PlayTab from '@/components/PlayTab.vue';
+import { IVideoInfoObj } from "@/objs/IVideoInfoObj";
+import DownloadTab from "@/components/DownloadTab.vue";
+import PlayTab from "@/components/PlayTab.vue";
+import { ILangObj } from "@/objs/ILangObj";
+import langStore from "@/stores/lang.store";
 
 @Component({
   components: {
@@ -51,26 +56,26 @@ export default class Main extends Vue {
   @Inject() url!: string;
 
   videoInfos: { [lang: string]: IVideoInfoObj } = {};
-  tab: string = 'download';
+  tab: string = "download";
 
-  get langs() {
-    return [
-      { code: "CH", name: "中文" },
-      { code: "E", name: "English" },
-      { code: "TG", name: "Tagalog" },
-      { code: "J", name: "日文" }
-    ];
-  }
-
-  get tabComponent() {
+  get tabComponent(): any {
     return this.tab === "download" ? DownloadTab : PlayTab;
   }
+  get langs(): ILangObj[] {
+    return langStore.langs;
+  }
+  get videoId(): string {
+    const lastSlash: number = this.url.lastIndexOf("/");
+    return this.url.substring(lastSlash + 1);
+  }
 
-  mounted() {
-    const lastSlash = this.url.lastIndexOf("/");
-    const videoId = this.url.substring(lastSlash + 1);
+  @Watch("langs")
+  onLangsChange(): void {
     this.langs.forEach(async lang => {
-      const url = `https://data.jw-api.org/mediator/v1/media-items/${lang.code}/${videoId}?clientType=tvjworg`;
+      if (this.videoInfos[lang.code]) {
+        return;
+      }
+      const url: string = `https://data.jw-api.org/mediator/v1/media-items/${lang.code}/${this.videoId}?clientType=tvjworg`;
       if (localStorage[url]) {
         this.videoInfos = {
           ...this.videoInfos,
@@ -85,6 +90,10 @@ export default class Main extends Vue {
         });
       }
     });
+  }
+
+  mounted(): void {
+    this.onLangsChange();
   }
 }
 </script>

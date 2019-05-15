@@ -9,19 +9,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Provide, Inject } from 'vue-property-decorator';
-import Appbar from '@/components/Frame/Appbar.vue';
-import Main from '@/components/Frame/Main.vue';
+import { Component, Vue, Provide, Inject } from "vue-property-decorator";
+import Appbar from "@/components/Frame/Appbar.vue";
+import Main from "@/components/Frame/Main.vue";
+import { ILangObj } from "@/objs/ILangObj";
+import LangStore from "@/stores/lang.store";
 
 @Component({
   components: {
     Appbar,
-    Main
+    Main,
   },
 })
 export default class App extends Vue {
-  @Provide() url: string = window.location.hostname === 'localhost'
-    ? 'https://tv.jw.org/#cmn-hant/mediaitems/StudioMonthly2019/pub-jwb_201905_1_VIDEO'
+  @Provide() url: string = window.location.hostname === "localhost"
+    ? "https://tv.jw.org/#cmn-hant/mediaitems/StudioMonthly2019/pub-jwb_201905_1_VIDEO"
     : window.location.href;
 }
 </script>

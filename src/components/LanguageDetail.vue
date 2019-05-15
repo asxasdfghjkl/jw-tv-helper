@@ -17,10 +17,10 @@
     </template>
     <template v-else>
       <div class="card-header">
-        [{{lang.name}}]
-        <span class="font-weight-bold">{{info.title}}</span>
+        <div class="text-truncate">[{{lang.name}}]</div>
+        <div class="font-weight-bold text-truncate">{{info.title}}</div>
       </div>
-      <ul class="list-group list-group-flush">
+      <ul class="list-group list-group-flush text-truncate">
         <li
           v-for="file in info.files"
           :key="file.label"
