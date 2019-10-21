@@ -6,11 +6,11 @@ Vue.config.productionTip = false;
 (function (): void {
   const { hostname, href } = window.location;
   if (hostname !== "localhost") {
-    if (hostname !== "tv.jw.org") {
+    if (hostname !== "jw.org" && hostname !== "www.jw.org") {
       return alert(`This script doesn't support this website.`);
     }
     if (!href.includes("/mediaitems/")) {
-      return alert(`Please use this script on a video downloading page.`);
+      return alert(`Please use this script on a video downloading page or this video is not supported.`);
     }
   }
   document.write(

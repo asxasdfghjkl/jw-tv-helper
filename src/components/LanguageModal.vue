@@ -104,7 +104,8 @@ export default class LanguageModal extends Vue {
   }
 
   get langOptions(): IAllLangObj[] {
-    return this.filterdSelected.filter(l => l.search.includes(this.filter));
+    const filter: string = (this.filter || "").toLowerCase();
+    return this.filterdSelected.filter(l => l.search.includes(filter));
   }
 
   onAddLang(lang: ILangObj): void {
