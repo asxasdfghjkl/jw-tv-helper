@@ -54,12 +54,11 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
-import { IVideoInfoObj } from '../objs/IVideoInfoObj';
 import { ILangObj } from '@/objs/ILangObj';
 import { IFileItemObj } from '@/objs/IFileItemObj';
 import LanguageDetail from '@/components/LanguageDetail.vue';
-import Axios from 'axios';
 import VideoPlayer from './VideoPlayer.vue';
+import { ParsedInfoObj } from '../objs/ParsedInfoObj';
 
 @Component({
   components: {
@@ -69,7 +68,7 @@ import VideoPlayer from './VideoPlayer.vue';
 })
 export default class PlayTab extends Vue {
   @Prop() langs!: ILangObj[];
-  @Prop() videoInfos!: { [lang: string]: IVideoInfoObj };
+  @Prop() videoInfos!: { [lang: string]: ParsedInfoObj };
 
   video: IFileItemObj | null = null;
   subtitles: IFileItemObj[] = [];
@@ -86,7 +85,7 @@ export default class PlayTab extends Vue {
   }
 
   @Watch("subtitles")
-  watchSubtitlesChange(){
+  watchSubtitlesChange() {
     this.playerKey = this.newPlayerKey();
   }
 
@@ -96,10 +95,12 @@ export default class PlayTab extends Vue {
       if (downloaded) {
         this.loadSubtitleFromDownloaded(file.lang.code);
       } else {
-        Axios.get(file.url).then(response => {
-          file.content = response.data;
-          this.downloadedSubtitles.push(file);
-          this.loadSubtitleFromDownloaded(file.lang.code);
+        fetch(file.url).then(response => {
+          response.text().then(data => {
+            file.content = data;
+            this.downloadedSubtitles.push(file);
+            this.loadSubtitleFromDownloaded(file.lang.code);
+          });
         })
       }
     } else {

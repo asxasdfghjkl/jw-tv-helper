@@ -31,21 +31,15 @@ import langStore from "@/stores/lang.store";
   }
 })
 export default class Appbar extends Vue {
-  @Inject() url!: string;
-
   showLangModal: boolean = false;
 
   onBackToSite(): void {
-    if (window.location.href === this.url) {
-      window.location.reload();
-    } else {
-      window.location.href = this.url;
-    }
+    window.location.reload();
   }
 
   mounted(): void {
     this.showLangModal = !langStore.langs.length;
-    window.history.pushState(undefined, "JW TV Helper", this.url + "#tv_helper");
+    window.history.pushState(undefined, "JW TV Helper", window.location.href + "#tv_helper");
     window.addEventListener("hashchange", this.onBackToSite);
   }
 }

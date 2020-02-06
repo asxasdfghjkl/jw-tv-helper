@@ -16,9 +16,9 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import { IVideoInfoObj } from '../objs/IVideoInfoObj';
 import { ILangObj } from '@/objs/ILangObj';
 import LanguageDetail from '@/components/LanguageDetail.vue';
+import { ParsedInfoObj } from '../objs/ParsedInfoObj';
 
 @Component({
   components: {
@@ -27,7 +27,7 @@ import LanguageDetail from '@/components/LanguageDetail.vue';
 })
 export default class DownloadTab extends Vue {
   @Prop() langs!: ILangObj[];
-  @Prop() videoInfos!: { [lang: string]: IVideoInfoObj };
+  @Prop() videoInfos!: { [lang: string]: ParsedInfoObj };
 
   onLinkClick() {
     return true;

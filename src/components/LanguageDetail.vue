@@ -30,13 +30,13 @@
           <div>
             <a
               class="material-icons btn btn-secondary mr-2"
-              :href="file.progressiveDownloadURL"
-              @click.stop="onClick($event, file.progressiveDownloadURL, lang)"
+              :href="file.videoLink"
+              @click.stop="onClick($event, file.videoLink, lang)"
             >videocam</a>
             <a
-              :class="['material-icons btn btn-secondary', {disabled: !file.subtitles}]"
-              :href="file.subtitles && file.subtitles.url"
-              @click.stop="onClick($event, file.subtitles && file.subtitles.url, lang)"
+              :class="['material-icons btn btn-secondary', {disabled: !file.subtitleLink}]"
+              :href="file.subtitleLink"
+              @click.stop="onClick($event, file.subtitleLink, lang)"
             >subtitles</a>
           </div>
         </li>
@@ -47,10 +47,10 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import { IVideoFileObj, IVideoInfoObj } from '@/objs/IVideoInfoObj';
 import { ILangObj } from '../objs/ILangObj';
 import VideoPlayer from '@/components/VideoPlayer.vue';
 import { IFileItemObj } from '../objs/IFileItemObj';
+import { ParsedInfoObj } from '../objs/ParsedInfoObj';
 
 @Component({
   name: "LanguageDetail",
@@ -59,7 +59,7 @@ import { IFileItemObj } from '../objs/IFileItemObj';
   },
 })
 export default class LanguageDetail extends Vue {
-  @Prop() info?: IVideoInfoObj;
+  @Prop() info?: ParsedInfoObj;
   @Prop() lang!: ILangObj;
   @Prop() onLinkClick!: (file: IFileItemObj) => boolean;
 

@@ -39,12 +39,12 @@
 
 <script lang="ts">
 import { Component, Vue, Inject, Prop, Watch } from "vue-property-decorator";
-import Axios from "axios";
-import { IVideoInfoObj } from "@/objs/IVideoInfoObj";
 import DownloadTab from "@/components/DownloadTab.vue";
 import PlayTab from "@/components/PlayTab.vue";
 import { ILangObj } from "@/objs/ILangObj";
 import langStore from "@/stores/lang.store";
+import { PageParser } from '@/PageParsers/PageParser';
+import { ParsedInfoObj } from '../../objs/ParsedInfoObj';
 
 @Component({
   components: {
@@ -53,9 +53,9 @@ import langStore from "@/stores/lang.store";
   },
 })
 export default class Main extends Vue {
-  @Inject() url!: string;
+  @Inject() pageParser!: PageParser;
 
-  videoInfos: { [lang: string]: IVideoInfoObj } = {};
+  videoInfos: { [lang: string]: ParsedInfoObj } = {};
   tab: string = "download";
 
   get tabComponent(): any {
@@ -64,29 +64,16 @@ export default class Main extends Vue {
   get langs(): ILangObj[] {
     return langStore.langs;
   }
-  get videoId(): string {
-    const lastSlash: number = this.url.lastIndexOf("/");
-    return this.url.substring(lastSlash + 1);
-  }
 
   @Watch("langs")
   onLangsChange(): void {
-    this.langs.forEach(async lang => {
-      if (this.videoInfos[lang.code]) {
-        return;
-      }
-      const url: string = `https://data.jw-api.org/mediator/v1/media-items/${lang.code}/${this.videoId}?clientType=tvjworg`;
-      if (localStorage[url]) {
-        this.videoInfos = {
-          ...this.videoInfos,
-          [lang.code]: JSON.parse(localStorage[url]).media[0]
-        };
-      } else {
-        Axios.get(url).then(res => {
+    this.langs.forEach(lang => {
+      if (!this.videoInfos[lang.code]) {
+        this.pageParser.getFilesInfo(lang).then(info => {
           this.videoInfos = {
             ...this.videoInfos,
-            [lang.code]: res.data.media[0]
-          };
+            [lang.code]: info
+          }
         });
       }
     });

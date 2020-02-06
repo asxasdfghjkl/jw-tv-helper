@@ -70,7 +70,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import { ILangObj } from "@/objs/ILangObj";
 import langStore, { STORE_KEY } from "@/stores/lang.store";
-import Axios from "axios";
 
 declare interface IAllLangObj extends ILangObj {
   search: string;
@@ -120,15 +119,17 @@ export default class LanguageModal extends Vue {
     if (allLangs) {
       this.allLangs = allLangs;
     } else {
-      Axios.get("https://data.jw-api.org/mediator/v1/languages/E/web?clientType=tvjworg").then(response => {
-        const options: IAllLangObj[] = response.data.languages.map((l: any) => ({
-          code: l.code,
-          name: l.vernacular,
-          enName: l.name,
-          search: `${l.vernacular} ${l.name}`.toLowerCase()
-        }));
-        allLangs = options;
-        this.allLangs = options;
+      fetch('https://data.jw-api.org/mediator/v1/languages/E/web').then(response => {
+        response.json().then(data => {
+          const options: IAllLangObj[] = data.languages.map((l: any) => ({
+            code: l.code,
+            name: l.vernacular,
+            enName: l.name,
+            search: `${l.vernacular} ${l.name}`.toLowerCase()
+          }));
+          allLangs = options;
+          this.allLangs = options;
+        });
       });
     }
   }

@@ -1,17 +1,16 @@
 import Vue from "vue";
 import App from "./App.vue";
+import { createPageParser } from './PageParsers/PageParserFactory';
 
 Vue.config.productionTip = false;
 
-(function (): void {
-  const { hostname, href } = window.location;
-  if (hostname !== "localhost") {
-    if (hostname !== "jw.org" && hostname !== "www.jw.org") {
-      return alert(`This script doesn't support this website.`);
-    }
-    if (!href.includes("/mediaitems/")) {
-      return alert(`Please use this script on a video downloading page or this video is not supported.`);
-    }
+function init() {
+  if (!["localhost", "jw.org", "www.jw.org"].includes(window.location.hostname)) {
+    return alert(`This script doesn't support this website.`);
+  }
+  const pageParser = createPageParser();
+  if (!pageParser) {
+    return alert(`This script can't detect video form this page.`);
   }
   document.write(
     `
@@ -29,6 +28,8 @@ Vue.config.productionTip = false;
   // tslint:disable-next-line: no-unused-expression
   new Vue({
     el: "#app",
-    render: h => h(App)
+    render: h => h(App, { props: { pageParser } })
   });
-})();
+}
+
+init();
