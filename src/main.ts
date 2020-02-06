@@ -4,11 +4,11 @@ import { createPageParser } from './PageParsers/PageParserFactory';
 
 Vue.config.productionTip = false;
 
-function init() {
+async function init() {
   if (!["localhost", "jw.org", "www.jw.org"].includes(window.location.hostname)) {
     return alert(`This script doesn't support this website.`);
   }
-  const pageParser = createPageParser();
+  const pageParser = await createPageParser();
   if (!pageParser) {
     return alert(`This script can't detect video form this page.`);
   }
