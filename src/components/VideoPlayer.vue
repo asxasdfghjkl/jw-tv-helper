@@ -4,18 +4,22 @@
     class="embed-responsive embed-responsive-16by9 d-flex justify-content-center align-items-center video-placeholder"
     style="background: var(--dark, #000000dd);color: white;"
   >
-    <span class="material-icons" style="font-size:40px;">video_library</span>
+    <span
+      class="material-icons"
+      style="font-size:40px;"
+    >video_library</span>
   </div>
   <div v-else>
     <video
+      ref="videoElm"
       controls
       class="embed-responsive embed-responsive-16by9"
       :src="video && video.url"
     >
       <track
-        v-if="base64"
+        v-if="vtt"
         kind="captions"
-        :src="base64"
+        :src="vtt"
         default
       >
     </video>
@@ -23,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { IFileItemObj } from '../objs/IFileItemObj';
 import * as base64 from "hi-base64";
 
@@ -35,8 +39,9 @@ const dataUrlHeader = "data:text/vtt;base64,";
 export default class VideoPlayer extends Vue {
   @Prop() video!: IFileItemObj | null;
   @Prop() subtitles!: IFileItemObj[];
+  @Prop() playbackRate!: string;
 
-  get base64(): string | null {
+  get vtt(): string | null {
     if (!this.subtitles.length) {
       return null;
     }
@@ -52,6 +57,15 @@ export default class VideoPlayer extends Vue {
     subs.unshift("WEBVTT");
     const mergeContent = subs.join("\n\n");
     return dataUrlHeader + base64.encode(mergeContent);
+  }
+
+  @Watch("playbackRate")
+  updatePlaybackRate() {
+    (this.$refs.videoElm as HTMLVideoElement).playbackRate = Math.max(parseFloat(this.playbackRate!) || 1, 0.1);
+  }
+
+  mounted() {
+    this.updatePlaybackRate();
   }
 }
 </script>

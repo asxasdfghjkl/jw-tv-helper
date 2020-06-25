@@ -5,7 +5,18 @@
         :video="video"
         :subtitles="subtitles"
         :key="playerKey"
+        :playbackRate="playbackRate"
       />
+      <div class="form-group my-3">
+        <label>Playback Rate</label>
+        <input
+          type="number"
+          class="form-control"
+          step="0.1"
+          min="0.1"
+          v-model="playbackRate"
+        >
+      </div>
       <div class="card my-3">
         <div class="card-header d-flex">
           <span class="material-icons">file_copy</span>
@@ -74,9 +85,10 @@ export default class PlayTab extends Vue {
   subtitles: IFileItemObj[] = [];
   downloadedSubtitles: IFileItemObj[] = [];
   playerKey: number = this.newPlayerKey();
+  playbackRate: string = "1";
 
   newPlayerKey(): number {
-    return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+    return +new Date();
   }
 
   @Watch('video')
