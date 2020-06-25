@@ -61,7 +61,10 @@ export default class VideoPlayer extends Vue {
 
   @Watch("playbackRate")
   updatePlaybackRate() {
-    (this.$refs.videoElm as HTMLVideoElement).playbackRate = Math.max(parseFloat(this.playbackRate!) || 1, 0.1);
+    const target = this.$refs.videoElm as HTMLVideoElement | null;
+    if (target) {
+      target.playbackRate = Math.max(parseFloat(this.playbackRate!) || 1, 0.1);
+    }
   }
 
   mounted() {
