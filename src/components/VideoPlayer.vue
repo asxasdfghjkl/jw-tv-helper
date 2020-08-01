@@ -15,6 +15,7 @@
       controls
       class="embed-responsive embed-responsive-16by9"
       :src="video && video.url"
+      @keypress="onKeyPress"
     >
       <track
         v-if="vtt"
@@ -27,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch, Emit } from "vue-property-decorator";
 import { IFileItemObj } from '../objs/IFileItemObj';
 import * as base64 from "hi-base64";
 
@@ -57,6 +58,22 @@ export default class VideoPlayer extends Vue {
     subs.unshift("WEBVTT");
     const mergeContent = subs.join("\n\n");
     return dataUrlHeader + base64.encode(mergeContent);
+  }
+
+  onKeyPress(evt: KeyboardEvent) {
+    const rate = parseFloat(this.playbackRate!) || 1;
+
+    if (evt.key === '+') {
+      this.changePlaybackRate(rate + 0.1);
+    } else if (evt.key === '-') {
+      this.changePlaybackRate(rate - 0.1);
+    } else if (evt.key === '*') {
+      this.changePlaybackRate(1);
+    }
+  }
+
+  changePlaybackRate(rate: number) {
+    this.$emit('update:playbackRate', rate.toFixed(1));
   }
 
   @Watch("playbackRate")

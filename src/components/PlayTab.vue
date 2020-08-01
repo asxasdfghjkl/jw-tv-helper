@@ -6,6 +6,7 @@
         :subtitles="subtitles"
         :key="playerKey"
         :playbackRate="playbackRate"
+        @update:playbackRate="value=>playbackRate = value"
       />
       <div class="form-group my-3">
         <label>Playback Rate</label>
