@@ -16,7 +16,7 @@ export class PubPageParser implements PageParser {
     params.set('txtCMSLang', lang.code);
     params.set('fileformat', 'mp4');
 
-    const response = await fetch(`https://apps.jw.org/GETPUBMEDIALINKS?${params.toString()}`);
+    const response = await fetch(`https://b.jw-cdn.org/apis/pub-media/GETPUBMEDIALINKS?${params.toString()}`);
     const json = await response.json();
     const files = json.files[lang.code.toUpperCase()].MP4;
     return {
