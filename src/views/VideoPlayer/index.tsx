@@ -1,5 +1,6 @@
 import * as React from 'react';
 import MatIcon from '../../components/MatIcon';
+import { WindowContext } from '../../contexts/WindowContext';
 
 export declare interface VideoPlayerProps {
 	videoUrl: string | undefined;
@@ -76,6 +77,7 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({ videoUr
 		}
 	}, []);
 
+	const windowInfo = React.useContext(WindowContext);
 	React.useEffect(() => {
 		const handler = (evt: KeyboardEvent) => {
 			switch (evt.key) {
@@ -101,11 +103,12 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({ videoUr
 			evt.preventDefault();
 		};
 
-		document.addEventListener('keydown', handler);
+		const doc = windowInfo.win.document;
+		doc.addEventListener('keydown', handler);
 		return () => {
-			document.removeEventListener('keydown', handler);
+			doc.removeEventListener('keydown', handler);
 		};
-	}, [setPlaybackRate, offsetVideoTime]);
+	}, [setPlaybackRate, offsetVideoTime, windowInfo]);
 
 	return (
 		<div>

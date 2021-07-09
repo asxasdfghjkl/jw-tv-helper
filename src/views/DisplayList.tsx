@@ -1,5 +1,6 @@
 import * as React from 'react';
 import MatIcon from '../components/MatIcon';
+import { WindowContext } from '../contexts/WindowContext';
 import { FileItemObj } from '../Objs/FileItemObj';
 
 export declare interface DisplyaFilesProps {
@@ -45,7 +46,7 @@ export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
 	);
 
 	const [isDragging, setIsDragging] = React.useState(false);
-
+	const windowInfo = React.useContext(WindowContext);
 	React.useEffect(() => {
 		const onDragOver = (evt: DragEvent) => {
 			if (evt.dataTransfer?.items.length) {
@@ -88,15 +89,16 @@ export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
 			setIsDragging(false);
 		};
 
-		document.addEventListener('dragover', onDragOver);
-		document.addEventListener('drop', onDrop);
-		document.addEventListener('dragend', onDragEnd);
+		const doc = windowInfo.win.document;
+		doc.addEventListener('dragover', onDragOver);
+		doc.addEventListener('drop', onDrop);
+		doc.addEventListener('dragend', onDragEnd);
 		return () => {
-			document.removeEventListener('dragover', onDragOver);
-			document.removeEventListener('drop', onDrop);
-			document.removeEventListener('dragend', onDragEnd);
+			doc.removeEventListener('dragover', onDragOver);
+			doc.removeEventListener('drop', onDrop);
+			doc.removeEventListener('dragend', onDragEnd);
 		};
-	}, [onOpenFiles]);
+	}, [onOpenFiles, windowInfo]);
 
 	const onDragLeave = React.useCallback(() => setIsDragging(false), [setIsDragging]);
 	return (

@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { LangsContextHandler } from './contexts/LangsContext';
 import MediaInfoContextHandler from './contexts/MediaInfoContext';
+import { WindowContext, WindowContextObj } from './contexts/WindowContext';
 import { createPageParser } from './PageParsers/PageParserFactory';
 
 const initialHTML = `
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
 .material-icons,.no-select{user-select:none;}
 .btn:not(.disabled),.pointer{cursor:pointer;}
@@ -24,24 +26,26 @@ async function init() {
 	if (!pageParser) {
 		return alert(`This script can't detect video form this page.`);
 	}
-	document.write(initialHTML);
+
+	const win = window.open('');
+	const winInfo: WindowContextObj = {
+		win: win || window,
+		isParent: !win,
+	};
+	winInfo.win.document.write(initialHTML);
 
 	ReactDOM.render(
 		<React.StrictMode>
-			<MediaInfoContextHandler mediaParser={pageParser}>
-				<LangsContextHandler>
-					<App />
-				</LangsContextHandler>
-			</MediaInfoContextHandler>
+			<WindowContext.Provider value={winInfo}>
+				<MediaInfoContextHandler mediaParser={pageParser}>
+					<LangsContextHandler>
+						<App />
+					</LangsContextHandler>
+				</MediaInfoContextHandler>
+			</WindowContext.Provider>
 		</React.StrictMode>,
-		document.getElementById('root')
+		winInfo.win.document.getElementById('root')
 	);
-
-	window.history.pushState({}, `TV Helper: ${document.title}`);
-	const onPopState = () => {
-		window.location.reload();
-	};
-	window.addEventListener('popstate', onPopState);
 }
 
 init();
