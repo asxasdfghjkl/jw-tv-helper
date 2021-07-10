@@ -1,6 +1,7 @@
 import * as React from 'react';
 import MatIcon from '../components/MatIcon';
 import { WindowContext } from '../contexts/WindowContext';
+import { SubtitleHelper } from '../helper/subtitle-helper';
 import { FileItemObj } from '../Objs/FileItemObj';
 
 export declare interface DisplyaFilesProps {
@@ -164,10 +165,30 @@ const DisplayItem: React.VoidFunctionComponent<DisplayItemProps> = ({ icon, item
 			<div className="d-flex p-2">
 				<MatIcon children={icon} className="me-1" />
 				{item.lang.name}
+				{item.type === 'subtitle' && <SubtitleLoadingStatus url={item.url} />}
 			</div>
 			{!!onRemove && <MatIcon className="btn rounded-pill p-2" data-url={item.url} onClick={onRemove} children="close" />}
 		</li>
 	);
+};
+
+type SubtitleLoadingStatusProps = {
+	url: string;
+};
+
+const SubtitleLoadingStatus: React.VoidFunctionComponent<SubtitleLoadingStatusProps> = ({ url }) => {
+	React.useMemo(() => SubtitleHelper.fetchSubtitle(url).then(() => setLoading(false)), [url]);
+
+	const [isLoading, setLoading] = React.useState(true);
+	if (isLoading) {
+		return (
+			<div className="spinner-border mx-1" role="status">
+				<span className="visually-hidden">Loading...</span>
+			</div>
+		);
+	}
+
+	return null;
 };
 
 function checkAccpetedFile(file: File) {

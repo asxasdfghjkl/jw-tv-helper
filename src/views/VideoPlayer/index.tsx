@@ -55,29 +55,38 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({ videoUr
 		}
 	}, [playbackRate]);
 
-	const offsetVideoTime = React.useCallback((evt: MouseEvent | KeyboardEvent, direction: 1 | -1) => {
-		const video = videoRef.current;
-		if (video) {
-			switch (true) {
-				case evt.ctrlKey && evt.shiftKey:
-					video.currentTime += direction * 60;
-					break;
-				case evt.ctrlKey:
-					video.currentTime += direction * 30;
-					break;
-				case evt.shiftKey:
-					video.currentTime += direction;
-					break;
-				case evt.altKey:
-					video.currentTime += direction * 5 * 60;
-					break;
-				default:
-					video.currentTime += direction * 5;
-			}
-		}
-	}, []);
-
 	const windowInfo = React.useContext(WindowContext);
+	const offsetVideoTime = React.useCallback(
+		(evt: MouseEvent | KeyboardEvent, direction: 1 | -1) => {
+			const video = videoRef.current;
+			if (video) {
+				let offset = 0;
+				switch (true) {
+					case evt.altKey:
+						offset = direction * 5 * 60;
+						break;
+					case evt.ctrlKey && evt.shiftKey:
+						offset = direction * 60;
+						break;
+					case evt.ctrlKey:
+						offset = direction * 30;
+						break;
+					case evt.shiftKey:
+						offset = direction;
+						break;
+					default:
+						offset = direction * 5;
+				}
+				const f = (n: number) => Math.floor(n).toString().padStart(2, '0');
+				(windowInfo.win as any).console.log(`time: ${f(video.currentTime / 60)}:${f(video.currentTime % 60)}`);
+				console.log('offset', offset);
+				video.currentTime = Math.floor(video.currentTime) + offset;
+				(windowInfo.win as any).console.log(`time: ${f(video.currentTime / 60)}:${f(video.currentTime % 60)}`);
+			}
+		},
+		[windowInfo]
+	);
+
 	React.useEffect(() => {
 		const handler = (evt: KeyboardEvent) => {
 			switch (evt.key) {
@@ -104,9 +113,9 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({ videoUr
 		};
 
 		const doc = windowInfo.win.document;
-		doc.addEventListener('keydown', handler);
+		doc.addEventListener('keypress', handler);
 		return () => {
-			doc.removeEventListener('keydown', handler);
+			doc.removeEventListener('keypress', handler);
 		};
 	}, [setPlaybackRate, offsetVideoTime, windowInfo]);
 
