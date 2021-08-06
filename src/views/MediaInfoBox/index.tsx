@@ -1,10 +1,10 @@
 import * as React from 'react';
-import LoadingSpinner from '../components/LoadingSpinner';
-import MatIcon from '../components/MatIcon';
-import { MediaInfoContext } from '../contexts/MediaInfoContext';
-import type { FileItemObj, FileItemType } from '../Objs/FileItemObj';
-import type { LangObj } from '../Objs/LangObj';
-import type { MediaInfoObj } from '../Objs/MediaInfoObj';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { MediaInfoContext } from '../../contexts/MediaInfoContext';
+import type { FileItemObj, FileItemType } from '../../Objs/FileItemObj';
+import type { LangObj } from '../../Objs/LangObj';
+import type { MediaInfoObj } from '../../Objs/MediaInfoObj';
+import { FileButton } from './FileButton';
 
 export declare interface MediaInfoBoxProps {
 	lang: LangObj;
@@ -64,17 +64,3 @@ export const MediaInfoBox: React.FunctionComponent<MediaInfoBoxProps> = ({ lang,
 };
 
 export default MediaInfoBox;
-
-type FileButtonProps = {
-	url: string | undefined;
-	type: 'video' | 'subtitle';
-	onClick: React.MouseEventHandler;
-};
-
-const FileButton: React.VoidFunctionComponent<FileButtonProps> = ({ url, type, onClick }) => {
-	return (
-		<a className={`btn btn-secondary me-2 lh-1 ${url ? '' : 'disabled'}`} href={url} data-type={type} onClick={onClick}>
-			<MatIcon children={type === 'video' ? 'videocam' : 'subtitles'} />
-		</a>
-	);
-};
