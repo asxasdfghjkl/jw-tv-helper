@@ -50,7 +50,7 @@ export const LangModal: React.VoidFunctionComponent<LangModalProps> = ({ onClose
 	);
 
 	const [filter, setFilter] = React.useState('');
-	const onFilterChange = React.useCallback((evt: React.ChangeEvent<HTMLInputElement>) => setFilter(evt.target.value), [setFilter]);
+	const onFilterChange = React.useCallback((evt: React.ChangeEvent<HTMLInputElement>) => setFilter(evt.target.value.toLowerCase()), [setFilter]);
 	const availableLangs = React.useMemo(() => {
 		return providedLangs.filter(lang => (!filter || lang.search.includes(filter)) && !selectedLangs.find(l => l.code === lang.code));
 	}, [selectedLangs, providedLangs, filter]);
