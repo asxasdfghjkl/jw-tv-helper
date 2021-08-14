@@ -28,13 +28,16 @@ export const DropdownMenu: React.FunctionComponent<DropdownMenuProps> = ({ child
 	React.useLayoutEffect(() => {
 		const handler = () => {
 			if (menuRef.current) {
-				const { innerWidth: windowWidth, innerHeight: windowHeight, scrollX, scrollY } = win.currentWindow;
+				const { innerWidth: winWidth, innerHeight: winHeight, scrollX, scrollY } = win.currentWindow;
+				const { clientWidth: docWidth, clientHeight: docHeight } = win.currentWindow.document.documentElement;
 				const { clientWidth: menuWidth, clientHeight: menuHeight } = menuRef.current;
+				const vw = Math.min(docWidth || 0, winWidth || 0);
+				const vh = Math.min(docHeight || 0, winHeight || 0);
 
 				const trans: string[] = [];
 
-				if (menuWidth + location.x >= windowWidth + scrollX) trans.push('translateX(-100%)');
-				if (menuHeight + location.y >= windowHeight + scrollY) trans.push('translateY(-100%)');
+				if (menuWidth + location.x >= vw + scrollX) trans.push('translateX(-100%)');
+				if (menuHeight + location.y >= vh + scrollY) trans.push('translateY(-100%)');
 
 				setTransform(trans.join(' ') || 'none');
 			}
