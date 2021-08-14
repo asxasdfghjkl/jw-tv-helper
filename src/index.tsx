@@ -29,10 +29,11 @@ async function init() {
 
 	const win = window.open('');
 	const winInfo: WindowContextObj = {
-		win: win || window,
+		currentWindow: win || window,
 		isParent: !win,
 	};
-	winInfo.win.document.write(initialHTML);
+	winInfo.currentWindow.document.write(initialHTML);
+	winInfo.currentWindow.addEventListener('contextmenu', evt => evt.preventDefault());
 
 	ReactDOM.render(
 		<React.StrictMode>
@@ -44,7 +45,7 @@ async function init() {
 				</MediaInfoContextHandler>
 			</WindowContext.Provider>
 		</React.StrictMode>,
-		winInfo.win.document.getElementById('root')
+		winInfo.currentWindow.document.getElementById('root')
 	);
 }
 

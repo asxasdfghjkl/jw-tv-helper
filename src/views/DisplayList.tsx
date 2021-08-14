@@ -90,7 +90,7 @@ export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
 			setIsDragging(false);
 		};
 
-		const doc = windowInfo.win.document;
+		const doc = windowInfo.currentWindow.document;
 		doc.addEventListener('dragover', onDragOver);
 		doc.addEventListener('drop', onDrop);
 		doc.addEventListener('dragend', onDragEnd);

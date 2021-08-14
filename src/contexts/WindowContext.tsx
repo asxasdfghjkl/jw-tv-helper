@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 export type WindowContextObj = {
-	win: Window;
+	currentWindow: Window;
 	isParent: boolean;
 };
 
 export const WindowContext = React.createContext<WindowContextObj>({
-	win: window,
+	currentWindow: window,
 	isParent: true,
 });

@@ -56,7 +56,7 @@ export const SubtitleContentDialog: React.VoidFunctionComponent<SubtitleContentD
 				</div>
 			</div>
 		</div>,
-		win.win.document.body
+		win.currentWindow.document.body
 	);
 };
 

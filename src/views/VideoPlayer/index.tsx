@@ -78,10 +78,10 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({ videoUr
 						offset = direction * 5;
 				}
 				const f = (n: number) => Math.floor(n).toString().padStart(2, '0');
-				(windowInfo.win as any).console.log(`time: ${f(video.currentTime / 60)}:${f(video.currentTime % 60)}`);
+				(windowInfo.currentWindow as any).console.log(`time: ${f(video.currentTime / 60)}:${f(video.currentTime % 60)}`);
 				console.log('offset', offset);
 				video.currentTime = Math.floor(video.currentTime) + offset;
-				(windowInfo.win as any).console.log(`time: ${f(video.currentTime / 60)}:${f(video.currentTime % 60)}`);
+				(windowInfo.currentWindow as any).console.log(`time: ${f(video.currentTime / 60)}:${f(video.currentTime % 60)}`);
 			}
 		},
 		[windowInfo]
@@ -112,7 +112,7 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({ videoUr
 			evt.preventDefault();
 		};
 
-		const doc = windowInfo.win.document;
+		const doc = windowInfo.currentWindow.document;
 		doc.addEventListener('keypress', handler);
 		return () => {
 			doc.removeEventListener('keypress', handler);

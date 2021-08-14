@@ -23,9 +23,9 @@ export const Appbar: React.FunctionComponent<AppbarProps> = props => {
 	const windowInfo = React.useContext(WindowContext);
 	const onClose = React.useCallback(() => {
 		if (windowInfo.isParent) {
-			windowInfo.win.location.reload();
+			windowInfo.currentWindow.location.reload();
 		} else {
-			windowInfo.win.close();
+			windowInfo.currentWindow.close();
 		}
 	}, [windowInfo]);
 	return (
