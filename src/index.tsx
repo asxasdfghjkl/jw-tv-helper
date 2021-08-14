@@ -26,8 +26,10 @@ async function init() {
 	if (!pageParser) {
 		return alert(`This script can't detect video form this page.`);
 	}
+	const ua = navigator.userAgent.toLowerCase();
+	const isWindowsOS = ua.includes('windows nt') || ua.includes('win64');
 
-	const win = window.open('');
+	const win = isWindowsOS ? window.open('') : null;
 	const winInfo: WindowContextObj = {
 		currentWindow: win || window,
 		isParent: !win,
