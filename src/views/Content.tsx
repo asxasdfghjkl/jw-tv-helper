@@ -55,7 +55,10 @@ export const Content: React.VoidFunctionComponent = () => {
 
 	React.useEffect(() => {
 		Promise.all(subtitleFiles.map(file => SubtitleHelper.fetchSubtitle(file.url))).then(subtitles => {
-			const content = SubtitleHelper.mergeSubtitles(subtitles);
+			let content = SubtitleHelper.mergeSubtitles(subtitles);
+			if (subtitles.length > 1) {
+				content = SubtitleHelper.removePosition(content);
+			}
 			const blob = new Blob([content], { type: 'text/vtt' });
 			const objectUrl = URL.createObjectURL(blob);
 			setSubtitleUrl(objectUrl);

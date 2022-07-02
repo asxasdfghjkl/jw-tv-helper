@@ -1,4 +1,4 @@
-const subtitleCache: { [url: string]: Promise<string> } = {};
+const subtitleCache: { [url: string]: Promise<string> | undefined } = {};
 
 export class SubtitleHelper {
 	static mergeSubtitles(subtitles: string[]): string {
@@ -18,8 +18,12 @@ export class SubtitleHelper {
 
 	static fetchSubtitle(url: string): Promise<string> {
 		if (subtitleCache[url]) {
-			return subtitleCache[url];
+			return subtitleCache[url]!;
 		}
 		return (subtitleCache[url] = fetch(url).then(res => res.text()));
+	}
+
+	static removePosition(subtitle: string): string {
+		return subtitle.replace(/line:\d+% /g, '');
 	}
 }
