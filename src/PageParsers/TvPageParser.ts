@@ -1,5 +1,5 @@
-import { LangObj } from '../Objs/LangObj';
-import { MediaInfoObj } from '../Objs/MediaInfoObj';
+import { LangObj } from '../objs/LangObj';
+import { MediaInfoObj } from '../objs/MediaInfoObj';
 import { MediaParser } from './MediaParser';
 
 export class TvPageParser implements MediaParser {
@@ -11,7 +11,7 @@ export class TvPageParser implements MediaParser {
 	}
 
 	async getFilesInfo(lang: LangObj): Promise<MediaInfoObj> {
-		const url: string = `https://data.jw-api.org/mediator/v1/media-items/${lang.code}/${this.videoId}?clientType=tvjworg`;
+		const url: string = `https://b.jw-cdn.org/apis/mediator/v1/media-items/${lang.code}/${this.videoId}`;
 		const response = await fetch(url);
 		const json = (await response.json()).media[0];
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LangObj } from '../Objs/LangObj';
+import { LangObj } from '../objs/LangObj';
 
 export type LagnsContextObj = {
 	langs: LangObj[];

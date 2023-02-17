@@ -1,9 +1,9 @@
 import * as React from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { MediaInfoContext } from '../../contexts/MediaInfoContext';
-import type { FileItemObj, FileItemType } from '../../Objs/FileItemObj';
-import type { LangObj } from '../../Objs/LangObj';
-import type { MediaInfoObj } from '../../Objs/MediaInfoObj';
+import type { FileItemObj, FileItemType } from '../../objs/FileItemObj';
+import type { LangObj } from '../../objs/LangObj';
+import type { MediaInfoObj } from '../../objs/MediaInfoObj';
 import { FileButton } from './FileButton';
 
 export declare interface MediaInfoBoxProps {

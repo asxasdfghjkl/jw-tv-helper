@@ -2,7 +2,7 @@ import * as React from 'react';
 import MatIcon from '../components/MatIcon';
 import { WindowContext } from '../contexts/WindowContext';
 import { SubtitleHelper } from '../helper/subtitle-helper';
-import { FileItemObj } from '../Objs/FileItemObj';
+import { FileItemObj } from '../objs/FileItemObj';
 
 export declare interface DisplyaFilesProps {
 	video: FileItemObj | undefined;

@@ -2,7 +2,7 @@ import * as React from 'react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import MatIcon from '../components/MatIcon';
 import LangsContext from '../contexts/LangsContext';
-import type { LangObj } from '../Objs/LangObj';
+import type { LangObj } from '../objs/LangObj';
 
 export declare interface LangModalProps {
 	onClose: () => void;

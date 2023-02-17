@@ -1,7 +1,7 @@
 import * as React from 'react';
 import LangsContext from '../contexts/LangsContext';
 import { SubtitleHelper } from '../helper/subtitle-helper';
-import { FileItemObj } from '../Objs/FileItemObj';
+import { FileItemObj } from '../objs/FileItemObj';
 import DisplayList from './DisplayList';
 import MediaInfoBox from './MediaInfoBox';
 import VideoPlayer from './VideoPlayer';

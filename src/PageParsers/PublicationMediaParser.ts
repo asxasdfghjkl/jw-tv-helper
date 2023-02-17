@@ -1,5 +1,5 @@
-import { LangObj } from '../Objs/LangObj';
-import { MediaInfoObj } from '../Objs/MediaInfoObj';
+import { LangObj } from '../objs/LangObj';
+import { MediaInfoObj } from '../objs/MediaInfoObj';
 import { MediaParser } from './MediaParser';
 
 export class PubicationMediaParser implements MediaParser {
