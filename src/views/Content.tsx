@@ -1,7 +1,13 @@
 import * as React from 'react';
 import LangsContext from '../contexts/LangsContext';
-import { SubtitleHelper } from '../helper/subtitle-helper';
+import { ParsedSubtitleTrack, SubtitleHelper } from '../helper/subtitle-helper';
 import { FileItemObj } from '../objs/FileItemObj';
+import {
+	DEFAULT_SUBTITLE_SETTINGS,
+	normalizeSubtitleSettings,
+	SubtitleSettings,
+	SUBTITLE_SETTINGS_STORAGE_KEY,
+} from '../objs/SubtitleSettings';
 import DisplayList from './DisplayList';
 import MediaInfoBox from './MediaInfoBox';
 import VideoPlayer from './VideoPlayer';
@@ -9,6 +15,23 @@ import VideoPlayer from './VideoPlayer';
 export const Content: React.VoidFunctionComponent = () => {
 	const [videoFile, setVideoFile] = React.useState<FileItemObj>();
 	const [subtitleFiles, setSubtitleFiles] = React.useState<FileItemObj[]>([]);
+	const [subtitleTracks, setSubtitleTracks] = React.useState<ParsedSubtitleTrack[]>([]);
+	const [subtitleSettings, setSubtitleSettings] = React.useState<SubtitleSettings>(() => {
+		try {
+			const savedSettings = window.localStorage.getItem(SUBTITLE_SETTINGS_STORAGE_KEY);
+			return savedSettings ? normalizeSubtitleSettings(JSON.parse(savedSettings)) : DEFAULT_SUBTITLE_SETTINGS;
+		} catch {
+			return DEFAULT_SUBTITLE_SETTINGS;
+		}
+	});
+
+	React.useEffect(() => {
+		try {
+			window.localStorage.setItem(SUBTITLE_SETTINGS_STORAGE_KEY, JSON.stringify(subtitleSettings));
+		} catch {
+			// The player can still use the settings when storage is unavailable.
+		}
+	}, [subtitleSettings]);
 
 	React.useEffect(() => {
 		if (videoFile?.url.startsWith('blob:')) {
@@ -54,15 +77,34 @@ export const Content: React.VoidFunctionComponent = () => {
 	}, [subtitleUrl]);
 
 	React.useEffect(() => {
+		let cancelled = false;
+
+		if (!subtitleFiles.length) {
+			setSubtitleUrl(undefined);
+			setSubtitleTracks([]);
+			return () => {
+				cancelled = true;
+			};
+		}
+
 		Promise.all(subtitleFiles.map(file => SubtitleHelper.fetchSubtitle(file.url))).then(subtitles => {
-			let content = SubtitleHelper.mergeSubtitles(subtitles);
-			if (subtitles.length > 1) {
-				content = SubtitleHelper.removePosition(content);
-			}
-			const blob = new Blob([content], { type: 'text/vtt' });
+			if (cancelled) return;
+
+			const content = SubtitleHelper.mergeSubtitles(subtitles);
+			const blob = new Blob([content], { type: 'text/vtt;charset=utf-8' });
 			const objectUrl = URL.createObjectURL(blob);
+			setSubtitleTracks(
+				subtitles.map((subtitle, index) => ({
+					id: subtitleFiles[index].url,
+					cues: SubtitleHelper.parseSubtitle(subtitle),
+				}))
+			);
 			setSubtitleUrl(objectUrl);
 		});
+
+		return () => {
+			cancelled = true;
+		};
 	}, [subtitleFiles]);
 
 	const onOpenLocalFile = React.useCallback(
@@ -90,12 +132,19 @@ export const Content: React.VoidFunctionComponent = () => {
 				<div className="tab-content p-3">
 					<div className="row mb-3">
 						<div className="col-12 col-lg-8">
-							<VideoPlayer videoUrl={videoFile?.url} subtitleUrl={subtitleUrl} />
+							<VideoPlayer
+								videoUrl={videoFile?.url}
+								subtitleUrl={subtitleUrl}
+								subtitleTracks={subtitleTracks}
+								subtitleSettings={subtitleSettings}
+							/>
 						</div>
 						<div className="col-12 col-lg-4">
 							<DisplayList
 								video={videoFile}
 								subtitles={subtitleFiles}
+								subtitleSettings={subtitleSettings}
+								onSubtitleSettingsChange={setSubtitleSettings}
 								onRemoveSubtitle={onRemoveSubtitle}
 								onOpenFile={onOpenLocalFile}
 							/>

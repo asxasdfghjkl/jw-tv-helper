@@ -3,12 +3,15 @@ import MatIcon from '../components/MatIcon';
 import { WindowContext } from '../contexts/WindowContext';
 import { SubtitleHelper } from '../helper/subtitle-helper';
 import { FileItemObj } from '../objs/FileItemObj';
+import { SubtitleSettings } from '../objs/SubtitleSettings';
 
 export declare interface DisplyaFilesProps {
 	video: FileItemObj | undefined;
 	subtitles: FileItemObj[];
 	onRemoveSubtitle: (url: string) => void;
 	onOpenFile: (files: File[]) => void;
+	subtitleSettings: SubtitleSettings;
+	onSubtitleSettingsChange: (settings: SubtitleSettings) => void;
 }
 
 export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
@@ -16,6 +19,8 @@ export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
 	subtitles = [],
 	onRemoveSubtitle,
 	onOpenFile: onOpenFiles,
+	subtitleSettings,
+	onSubtitleSettingsChange,
 }) => {
 	const onRemoveClick = React.useCallback(
 		(evt: React.MouseEvent<HTMLElement>) => {
@@ -128,6 +133,78 @@ export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
 						<DisplayItem key={sub.url} icon="subtitles" item={sub} onRemove={onRemoveClick} />
 					))}
 				</ul>
+			</div>
+
+			<div className="card mt-3">
+				<div className="card-header d-flex align-items-center">
+					<MatIcon children="tune" className="me-1" />
+					<span>Subtitle Settings</span>
+				</div>
+				<div className="card-body">
+					<div className="mb-3">
+						<label htmlFor="subtitle-size" className="form-label d-flex justify-content-between">
+							<span>Size</span>
+							<strong>{subtitleSettings.fontSize}px</strong>
+						</label>
+						<input
+							id="subtitle-size"
+							type="range"
+							className="form-range"
+							min={12}
+							max={72}
+							step={1}
+							value={subtitleSettings.fontSize}
+							onChange={event =>
+								onSubtitleSettingsChange({
+									...subtitleSettings,
+									fontSize: Number(event.currentTarget.value),
+								})
+							}
+						/>
+					</div>
+					<div className="mb-3">
+						<label htmlFor="subtitle-spacing" className="form-label d-flex justify-content-between">
+							<span>Spacing</span>
+							<strong>{subtitleSettings.spacing}px</strong>
+						</label>
+						<input
+							id="subtitle-spacing"
+							type="range"
+							className="form-range"
+							min={0}
+							max={32}
+							step={1}
+							value={subtitleSettings.spacing}
+							onChange={event =>
+								onSubtitleSettingsChange({
+									...subtitleSettings,
+									spacing: Number(event.currentTarget.value),
+								})
+							}
+						/>
+					</div>
+					<div className="d-flex align-items-center justify-content-between">
+						<label htmlFor="subtitle-color" className="form-label mb-0">
+							Color
+						</label>
+						<div className="d-flex align-items-center">
+							<code className="me-2">{subtitleSettings.color.toUpperCase()}</code>
+							<input
+								id="subtitle-color"
+								type="color"
+								className="form-control form-control-color"
+								value={subtitleSettings.color}
+								title="Choose subtitle color"
+								onChange={event =>
+									onSubtitleSettingsChange({
+										...subtitleSettings,
+										color: event.currentTarget.value,
+									})
+								}
+							/>
+						</div>
+					</div>
+				</div>
 			</div>
 
 			{!!isDragging && (
