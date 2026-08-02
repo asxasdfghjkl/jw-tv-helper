@@ -46,5 +46,5 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 ```
-javascript:fetch('https://raw.githubusercontent.com/asxasdfghjkl/jw-tv-helper/master/dist/js/app.js').then(res=> res.text().then(js=>{localStorage['file-list'] = js; eval(js);})).catch(function(){localStorage['file-list'] ? eval(localStorage[%27file-list%27]) : alert(%27faild loading the script%27);})
+javascript:(()=>{const run=js=>Function(js)();fetch('https://raw.githubusercontent.com/asxasdfghjkl/jw-tv-helper/master/dist/js/app.js').then(res=>res.text()).then(js=>{localStorage.setItem('file-list',js);run(js)}).catch(()=>{const js=localStorage.getItem('file-list');js?run(js):alert('failed loading the script')})})()
 ```

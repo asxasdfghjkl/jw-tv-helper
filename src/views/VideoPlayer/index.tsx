@@ -13,6 +13,15 @@ export declare interface VideoPlayerProps {
 
 const PLAYBACK_RATE_STEP = 0.1;
 
+type WebkitFullscreenDocument = Document & {
+	webkitExitFullscreen?: () => Promise<void> | void;
+	webkitFullscreenElement?: Element;
+};
+
+type WebkitFullscreenContainer = HTMLDivElement & {
+	webkitRequestFullscreen?: () => Promise<void> | void;
+};
+
 export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 	videoUrl,
 	subtitleUrl,
@@ -21,7 +30,9 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 }) => {
 	const videoRef = React.useRef<HTMLVideoElement>(null);
 	const trackRef = React.useRef<HTMLTrackElement>(null);
+	const playerSurfaceRef = React.useRef<WebkitFullscreenContainer>(null);
 	const [activeSubtitles, setActiveSubtitles] = React.useState<{ id: string; text: string }[]>([]);
+	const [isFullscreen, setIsFullscreen] = React.useState(false);
 	const videoStatusRef = React.useRef({
 		currentTime: 0,
 		paused: true,
@@ -71,6 +82,48 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 			trackRef.current.track.mode = 'hidden';
 		}
 	}, [subtitleUrl]);
+
+	React.useEffect(() => {
+		const surface = playerSurfaceRef.current;
+		if (!surface) return;
+
+		const document = surface.ownerDocument as WebkitFullscreenDocument;
+		const handleFullscreenChange = () => {
+			const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
+			setIsFullscreen(fullscreenElement === surface);
+		};
+
+		document.addEventListener('fullscreenchange', handleFullscreenChange);
+		document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+		return () => {
+			document.removeEventListener('fullscreenchange', handleFullscreenChange);
+			document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+		};
+	}, []);
+
+	const toggleFullscreen = React.useCallback(async () => {
+		const surface = playerSurfaceRef.current;
+		if (!surface) return;
+
+		const document = surface.ownerDocument as WebkitFullscreenDocument;
+		const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
+
+		try {
+			if (fullscreenElement) {
+				if (document.exitFullscreen) {
+					await document.exitFullscreen();
+				} else {
+					await document.webkitExitFullscreen?.();
+				}
+			} else if (surface.requestFullscreen) {
+				await surface.requestFullscreen();
+			} else {
+				await surface.webkitRequestFullscreen?.();
+			}
+		} catch (error) {
+			console.error('Unable to toggle fullscreen mode', error);
+		}
+	}, []);
 
 	React.useEffect(() => {
 		const video = videoRef.current;
@@ -155,7 +208,10 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 				const f = (n: number) => Math.floor(n).toString().padStart(2, '0');
 				(windowInfo.currentWindow as any).console.log(`time: ${f(video.currentTime / 60)}:${f(video.currentTime % 60)}`);
 				console.log('offset', offset);
-				video.currentTime = Math.floor(video.currentTime) + offset;
+				const nextTime = video.currentTime + offset;
+				video.currentTime = Number.isFinite(video.duration)
+					? Math.min(video.duration, Math.max(0, nextTime))
+					: Math.max(0, nextTime);
 				(windowInfo.currentWindow as any).console.log(`time: ${f(video.currentTime / 60)}:${f(video.currentTime % 60)}`);
 			}
 		},
@@ -164,6 +220,9 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 
 	React.useEffect(() => {
 		const handler = (evt: KeyboardEvent) => {
+			const target = evt.target as HTMLElement | null;
+			if (target?.isContentEditable || ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.tagName || '')) return;
+
 			switch (evt.key) {
 				case '+':
 					setPlaybackRate(rate => rate + PLAYBACK_RATE_STEP);
@@ -185,24 +244,38 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 					return;
 			}
 			evt.preventDefault();
+			evt.stopPropagation();
 		};
 
 		const doc = windowInfo.currentWindow.document;
-		doc.addEventListener('keypress', handler);
+		doc.addEventListener('keydown', handler, true);
 		return () => {
-			doc.removeEventListener('keypress', handler);
+			doc.removeEventListener('keydown', handler, true);
 		};
 	}, [setPlaybackRate, offsetVideoTime, windowInfo]);
 
 	return (
 		<div>
 			<div
+				ref={playerSurfaceRef}
 				className="d-flex justify-content-center align-items-center position-relative overflow-hidden w-100"
-				style={{ aspectRatio: '16 / 9', background: 'var(--bs-dark, #000000dd)', color: '#000' }}
+				style={{
+					aspectRatio: isFullscreen ? undefined : '16 / 9',
+					background: 'var(--bs-dark, #000000dd)',
+					color: '#000',
+					height: isFullscreen ? '100%' : undefined,
+				}}
 			>
 					{!!activeVideoUrl ? (
 						<>
-							<video ref={videoRef} controls playsInline className="h-100 w-100" src={activeVideoUrl}>
+							<video
+								ref={videoRef}
+								controls
+								playsInline
+								className="h-100 w-100"
+								style={{ objectFit: 'contain' }}
+								src={activeVideoUrl}
+							>
 								{!!subtitleUrl && (
 								<track
 									key={subtitleUrl}
@@ -218,6 +291,16 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 								/>
 								)}
 							</video>
+							<button
+								type="button"
+								className="btn btn-dark position-absolute d-flex align-items-center justify-content-center rounded-circle p-2"
+								style={{ right: 12, top: 12, zIndex: 3 }}
+								onClick={toggleFullscreen}
+								aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+								title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+							>
+								<MatIcon children={isFullscreen ? 'fullscreen_exit' : 'fullscreen'} />
+							</button>
 							{!!activeSubtitles.length && (
 								<div
 									className="position-absolute d-flex flex-column align-items-center w-100 px-3"
