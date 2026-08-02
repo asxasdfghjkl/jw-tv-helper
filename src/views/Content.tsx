@@ -4,9 +4,15 @@ import { ParsedSubtitleTrack, SubtitleHelper } from '../helper/subtitle-helper';
 import { FileItemObj } from '../objs/FileItemObj';
 import {
 	DEFAULT_SUBTITLE_SETTINGS,
+	HEIGHT_BASED_SUBTITLE_SETTINGS_STORAGE_KEY,
+	LEGACY_SUBTITLE_SETTINGS_STORAGE_KEY,
+	migrateHeightBasedSubtitleSettings,
+	migrateLegacySubtitleSettings,
+	migrateWidthBasedSubtitleSettings,
 	normalizeSubtitleSettings,
 	SubtitleSettings,
 	SUBTITLE_SETTINGS_STORAGE_KEY,
+	WIDTH_BASED_SUBTITLE_SETTINGS_STORAGE_KEY,
 } from '../objs/SubtitleSettings';
 import DisplayList from './DisplayList';
 import MediaInfoBox from './MediaInfoBox';
@@ -19,7 +25,16 @@ export const Content: React.VoidFunctionComponent = () => {
 	const [subtitleSettings, setSubtitleSettings] = React.useState<SubtitleSettings>(() => {
 		try {
 			const savedSettings = window.localStorage.getItem(SUBTITLE_SETTINGS_STORAGE_KEY);
-			return savedSettings ? normalizeSubtitleSettings(JSON.parse(savedSettings)) : DEFAULT_SUBTITLE_SETTINGS;
+			if (savedSettings) return normalizeSubtitleSettings(JSON.parse(savedSettings));
+
+			const heightBasedSettings = window.localStorage.getItem(HEIGHT_BASED_SUBTITLE_SETTINGS_STORAGE_KEY);
+			if (heightBasedSettings) return migrateHeightBasedSubtitleSettings(JSON.parse(heightBasedSettings));
+
+			const widthBasedSettings = window.localStorage.getItem(WIDTH_BASED_SUBTITLE_SETTINGS_STORAGE_KEY);
+			if (widthBasedSettings) return migrateWidthBasedSubtitleSettings(JSON.parse(widthBasedSettings));
+
+			const legacySettings = window.localStorage.getItem(LEGACY_SUBTITLE_SETTINGS_STORAGE_KEY);
+			return legacySettings ? migrateLegacySubtitleSettings(JSON.parse(legacySettings)) : DEFAULT_SUBTITLE_SETTINGS;
 		} catch {
 			return DEFAULT_SUBTITLE_SETTINGS;
 		}

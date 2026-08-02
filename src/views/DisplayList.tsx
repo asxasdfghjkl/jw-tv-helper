@@ -144,15 +144,15 @@ export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
 					<div className="mb-3">
 						<label htmlFor="subtitle-size" className="form-label d-flex justify-content-between">
 							<span>Size</span>
-							<strong>{subtitleSettings.fontSize}px</strong>
+							<strong>{subtitleSettings.fontSize.toFixed(1)}%</strong>
 						</label>
 						<input
 							id="subtitle-size"
 							type="range"
 							className="form-range"
-							min={12}
-							max={72}
-							step={1}
+							min={2}
+							max={15}
+							step={0.1}
 							value={subtitleSettings.fontSize}
 							onChange={event =>
 								onSubtitleSettingsChange({
@@ -163,27 +163,27 @@ export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
 						/>
 					</div>
 					<div className="mb-3">
-						<label htmlFor="subtitle-spacing" className="form-label d-flex justify-content-between">
-							<span>Spacing</span>
-							<strong>{subtitleSettings.spacing}px</strong>
+						<label htmlFor="subtitle-line-height" className="form-label d-flex justify-content-between">
+							<span>Line Height</span>
+							<strong>{subtitleSettings.lineHeight.toFixed(1)}x</strong>
 						</label>
 						<input
-							id="subtitle-spacing"
+							id="subtitle-line-height"
 							type="range"
 							className="form-range"
-							min={0}
-							max={32}
-							step={1}
-							value={subtitleSettings.spacing}
+							min={1}
+							max={2}
+							step={0.1}
+							value={subtitleSettings.lineHeight}
 							onChange={event =>
 								onSubtitleSettingsChange({
 									...subtitleSettings,
-									spacing: Number(event.currentTarget.value),
+									lineHeight: Number(event.currentTarget.value),
 								})
 							}
 						/>
 					</div>
-					<div className="d-flex align-items-center justify-content-between">
+					<div className="d-flex align-items-center justify-content-between mb-3">
 						<label htmlFor="subtitle-color" className="form-label mb-0">
 							Color
 						</label>
@@ -199,6 +199,27 @@ export const DisplyaFiles: React.FunctionComponent<DisplyaFilesProps> = ({
 									onSubtitleSettingsChange({
 										...subtitleSettings,
 										color: event.currentTarget.value,
+									})
+								}
+							/>
+						</div>
+					</div>
+					<div className="d-flex align-items-center justify-content-between">
+						<label htmlFor="subtitle-shadow-color" className="form-label mb-0">
+							Shadow Color
+						</label>
+						<div className="d-flex align-items-center">
+							<code className="me-2">{subtitleSettings.shadowColor.toUpperCase()}</code>
+							<input
+								id="subtitle-shadow-color"
+								type="color"
+								className="form-control form-control-color"
+								value={subtitleSettings.shadowColor}
+								title="Choose subtitle shadow color"
+								onChange={event =>
+									onSubtitleSettingsChange({
+										...subtitleSettings,
+										shadowColor: event.currentTarget.value,
 									})
 								}
 							/>

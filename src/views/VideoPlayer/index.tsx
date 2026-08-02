@@ -256,6 +256,7 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 
 	return (
 		<div>
+			<style>{`.jw-tv-video::-webkit-media-controls-fullscreen-button { display: none !important; }`}</style>
 			<div
 				ref={playerSurfaceRef}
 				className="d-flex justify-content-center align-items-center position-relative overflow-hidden w-100"
@@ -263,6 +264,7 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 					aspectRatio: isFullscreen ? undefined : '16 / 9',
 					background: 'var(--bs-dark, #000000dd)',
 					color: '#000',
+					containerType: 'size',
 					height: isFullscreen ? '100%' : undefined,
 				}}
 			>
@@ -271,8 +273,9 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 							<video
 								ref={videoRef}
 								controls
+								controlsList="nofullscreen"
 								playsInline
-								className="h-100 w-100"
+								className="jw-tv-video h-100 w-100"
 								style={{ objectFit: 'contain' }}
 								src={activeVideoUrl}
 							>
@@ -291,22 +294,23 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 								/>
 								)}
 							</video>
-							<button
-								type="button"
-								className="btn btn-dark position-absolute d-flex align-items-center justify-content-center rounded-circle p-2"
-								style={{ right: 12, top: 12, zIndex: 3 }}
-								onClick={toggleFullscreen}
-								aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-								title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-							>
-								<MatIcon children={isFullscreen ? 'fullscreen_exit' : 'fullscreen'} />
-							</button>
+							{isFullscreen && (
+								<button
+									type="button"
+									className="btn btn-dark position-absolute d-flex align-items-center justify-content-center rounded-circle p-2"
+									style={{ right: 12, top: 12, zIndex: 3 }}
+									onClick={toggleFullscreen}
+									aria-label="Exit fullscreen"
+									title="Exit fullscreen"
+								>
+									<MatIcon children="fullscreen_exit" />
+								</button>
+							)}
 							{!!activeSubtitles.length && (
 								<div
 									className="position-absolute d-flex flex-column align-items-center w-100 px-3"
 									style={{
 										bottom: '7%',
-										gap: subtitleSettings.spacing,
 										pointerEvents: 'none',
 										zIndex: 2,
 									}}
@@ -318,11 +322,11 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 											className="text-center"
 											style={{
 												color: subtitleSettings.color,
-												fontSize: subtitleSettings.fontSize,
+												fontSize: `${subtitleSettings.fontSize}cqh`,
 												fontWeight: 600,
-												lineHeight: 1.2,
+												lineHeight: subtitleSettings.lineHeight,
 												maxWidth: '94%',
-												textShadow: '0 1px 2px #000, 0 0 4px #000',
+												textShadow: `0 1px 2px ${subtitleSettings.shadowColor}, 0 0 4px ${subtitleSettings.shadowColor}`,
 												whiteSpace: 'pre-line',
 											}}
 										>
@@ -337,8 +341,8 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 					)}
 			</div>
 			<fieldset className="mt-2">
-				<div className="row">
-					<div className="col-12 col-md-6">
+				<div className="d-flex align-items-end gap-3">
+					<div className="flex-grow-1">
 						<label htmlFor="playbackRateControl" className="form-label">
 							Playback Speed:
 							<strong className="ms-1">{playbackRate.toFixed(1)}x</strong>
@@ -355,6 +359,15 @@ export const VideoPlayer: React.FunctionComponent<VideoPlayerProps> = ({
 							onDoubleClick={() => setPlaybackRate(1)}
 						/>
 					</div>
+					<button
+						type="button"
+						className="btn btn-secondary d-flex align-items-center mb-1"
+						onClick={toggleFullscreen}
+						disabled={!activeVideoUrl}
+					>
+						<MatIcon children="fullscreen" className="me-1" />
+						Fullscreen
+					</button>
 				</div>
 			</fieldset>
 		</div>
